@@ -13,5 +13,6 @@
 - (void)addParallelViewWithUIView:(UIView *)aViewToAdd;
 - (void)addParallelViewWithUIView:(UIView *)aViewToAdd withDisplayRadio:(CGFloat )displayRadio;
 - (void)addParallelViewWithUIView:(UIView *)aViewToAdd withDisplayRadio:(CGFloat )displayRadio cutOffAtMax:(BOOL)cutOffAtMax;
-
+- (void)changeDisplayRatio:(CGFloat)displayRatio;
+- (void)changeDisplayRatio:(CGFloat)displayRatio animated:(BOOL)animated;
 @end

@@ -20,6 +20,7 @@ static char UITableViewZGParallelViewViewHeight;
 static char UITableViewZGParallelViewCutOffAtMax;
 static char UITableViewZGParallelViewEmbededScrollView;
 static char UITableViewZGParallelViewIsObserving;
+static char UITableViewZGParallelViewViewAdded;
 
 
 @interface UITableView (ZGParallelViewPri)
@@ -27,12 +28,14 @@ static char UITableViewZGParallelViewIsObserving;
 @property (nonatomic, assign) CGFloat viewHeight;
 @property (nonatomic, assign) BOOL cutOffAtMax;
 @property (nonatomic, strong) ZGScrollView *embededScrollView;
+@property (nonatomic, strong) UIView *viewAdded;
 @property (nonatomic, assign) BOOL isObserving;
 @end
 
 
 @implementation UITableView (ZGParallelViewPri)
 @dynamic displayRadio, viewHeight, cutOffAtMax, embededScrollView, isObserving;
+@dynamic viewAdded;
 
 - (void)setDisplayRadio:(CGFloat)displayRadio {
     [self willChangeValueForKey:@"displayRadio"];
@@ -87,6 +90,18 @@ static char UITableViewZGParallelViewIsObserving;
     return objc_getAssociatedObject(self, &UITableViewZGParallelViewEmbededScrollView);
 }
 
+- (void)setViewAdded:(UIView *)viewAdded {
+    [self willChangeValueForKey:@"viewAdded"];
+    objc_setAssociatedObject(self, &UITableViewZGParallelViewViewAdded,
+                             viewAdded,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self didChangeValueForKey:@"viewAdded"];
+}
+
+- (UIView *)viewAdded {
+    return objc_getAssociatedObject(self, &UITableViewZGParallelViewViewAdded);
+}
+
 - (void)setIsObserving:(BOOL)isObserving {
     if (self.isObserving == YES && isObserving == NO) {
         @try {
@@ -128,7 +143,9 @@ static char UITableViewZGParallelViewIsObserving;
 
 - (void)addParallelViewWithUIView:(UIView *)aViewToAdd withDisplayRadio:(CGFloat)aDisplayRadio cutOffAtMax:(BOOL)cutOffAtMax{
     NSAssert(aViewToAdd != nil, @"aViewToAdd can not be nil");
-    
+
+    self.viewAdded = aViewToAdd;
+
     aViewToAdd.frame = CGRectOffset(aViewToAdd.frame, -aViewToAdd.frame.origin.x, -aViewToAdd.frame.origin.y);
     if (aDisplayRadio>1 && aDisplayRadio<0) {
         self.displayRadio = 1;
@@ -151,6 +168,33 @@ static char UITableViewZGParallelViewIsObserving;
         [self addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
         self.isObserving = YES;
     }
+}
+
+- (void)changeDisplayRatio:(CGFloat)displayRatio animated:(BOOL)animated
+{
+    self.displayRadio = displayRatio;
+ 
+    if (animated) {
+        [UIView beginAnimations:nil context:nil];
+    }
+    
+    self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, -self.viewAdded.frame.origin.x, -self.viewAdded.frame.origin.y);
+    self.embededScrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight);
+    self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, 0, self.viewHeight*(1.f - self.displayRadio)/2.f);
+    
+    UIView *headView = self.tableHeaderView;
+    headView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight*self.displayRadio);
+    self.embededScrollView.frame = CGRectOffset(self.embededScrollView.frame, 0, self.viewHeight*(self.displayRadio-1.f));
+    self.tableHeaderView = headView;
+
+    if (animated) {
+        [UIView commitAnimations];
+    }
+}
+
+- (void)changeDisplayRatio:(CGFloat)displayRatio
+{
+    [self changeDisplayRatio:displayRatio animated:NO];
 }
 
 - (void)updateParallelView {
