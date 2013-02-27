@@ -178,6 +178,7 @@ static char UITableViewZGParallelViewViewAdded;
         [UIView beginAnimations:nil context:nil];
     }
     
+    self.contentOffset = CGPointZero;
     self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, -self.viewAdded.frame.origin.x, -self.viewAdded.frame.origin.y);
     self.embededScrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight);
     self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, 0, self.viewHeight*(1.f - self.displayRadio)/2.f);
