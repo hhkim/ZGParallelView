@@ -182,15 +182,16 @@ static char UITableViewZGParallelViewViewAdded;
     self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, -self.viewAdded.frame.origin.x, -self.viewAdded.frame.origin.y);
     self.embededScrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight);
     self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, 0, self.viewHeight*(1.f - self.displayRadio)/2.f);
-    
-    UIView *headView = self.tableHeaderView;
-    headView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight*self.displayRadio);
+
     self.embededScrollView.frame = CGRectOffset(self.embededScrollView.frame, 0, self.viewHeight*(self.displayRadio-1.f));
-    self.tableHeaderView = headView;
 
     if (animated) {
         [UIView commitAnimations];
     }
+    
+    UIView *headView = self.tableHeaderView;
+    headView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight*self.displayRadio);
+//    self.tableHeaderView = headView;
 }
 
 - (void)changeDisplayRatio:(CGFloat)displayRatio
