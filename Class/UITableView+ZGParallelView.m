@@ -158,10 +158,10 @@ static char UITableViewZGParallelViewViewAdded;
     self.embededScrollView.scrollsToTop = NO;
     self.embededScrollView.tableView = self;
     [self.embededScrollView addSubview:aViewToAdd];
-    aViewToAdd.frame = CGRectOffset(aViewToAdd.frame, 0, self.viewHeight*(1.f - self.displayRadio)/2.f);
-    UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.viewHeight*self.displayRadio)];
+    aViewToAdd.frame = CGRectOffset(aViewToAdd.frame, 0, (int)(self.viewHeight*(1.f - self.displayRadio)/2.f));
+    UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, (int)(self.viewHeight*self.displayRadio))];
     [headView addSubview:self.embededScrollView];
-    self.embededScrollView.frame = CGRectOffset(self.embededScrollView.frame, 0, self.viewHeight*(self.displayRadio-1.f));
+    self.embededScrollView.frame = CGRectOffset(self.embededScrollView.frame, 0, (int)(self.viewHeight*(self.displayRadio-1.f)));
     self.tableHeaderView = headView;
     
     if (self.isObserving == NO) {
@@ -181,16 +181,16 @@ static char UITableViewZGParallelViewViewAdded;
     self.contentOffset = CGPointZero;
     self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, -self.viewAdded.frame.origin.x, -self.viewAdded.frame.origin.y);
     self.embededScrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight);
-    self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, 0, self.viewHeight*(1.f - self.displayRadio)/2.f);
+    self.viewAdded.frame = CGRectOffset(self.viewAdded.frame, 0, (int)(self.viewHeight*(1.f - self.displayRadio)/2.f));
 
-    self.embededScrollView.frame = CGRectOffset(self.embededScrollView.frame, 0, self.viewHeight*(self.displayRadio-1.f));
+    self.embededScrollView.frame = CGRectOffset(self.embededScrollView.frame, 0, (int)(self.viewHeight*(self.displayRadio-1.f)));
 
     if (animated) {
         [UIView commitAnimations];
     }
     
     UIView *headView = self.tableHeaderView;
-    headView.frame = CGRectMake(0, 0, self.frame.size.width, self.viewHeight*self.displayRadio);
+    headView.frame = CGRectMake(0, 0, self.frame.size.width, (int)(self.viewHeight*self.displayRadio));
 //    self.tableHeaderView = headView;
 }
 
